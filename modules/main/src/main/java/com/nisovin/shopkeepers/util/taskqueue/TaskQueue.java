@@ -2,7 +2,9 @@ package com.nisovin.shopkeepers.util.taskqueue;
 
 import java.util.ArrayDeque;
 import java.util.Queue;
+import java.util.concurrent.TimeUnit;
 
+import io.papermc.paper.threadedregions.scheduler.ScheduledTask;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitScheduler;
@@ -69,7 +71,7 @@ public abstract class TaskQueue<@NonNull T> implements TaskQueueStatistics {
 	private final int workUnitsPerExecution;
 	private final Queue<@NonNull T> pending = new ArrayDeque<>();
 	private int maxPending = 0;
-	private @Nullable BukkitTask task = null;
+	private @Nullable ScheduledTask task = null;
 
 	/**
 	 * Creates a new {@link TaskQueue}.
@@ -188,7 +190,7 @@ public abstract class TaskQueue<@NonNull T> implements TaskQueueStatistics {
 		}
 
 		// Start new task:
-		task = Bukkit.getScheduler().runTaskTimer(plugin, this.createTask(), 1, taskPeriodTicks);
+		task = Bukkit.getAsyncScheduler().runAtFixedRate(plugin, task1 -> this.createTask(), 1 * 50, taskPeriodTicks * 50, TimeUnit.MILLISECONDS);
 	}
 
 	private void stopTask() {

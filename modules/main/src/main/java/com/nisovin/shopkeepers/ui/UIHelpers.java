@@ -15,7 +15,7 @@ public final class UIHelpers {
 	// The delay is for example required during the handling of inventory drag events, because the
 	// cancelled drag event resets the cursor afterwards.
 	public static void swapCursorDelayed(InventoryView view, int rawSlot) {
-		Bukkit.getScheduler().runTask(ShopkeepersPlugin.getInstance(), () -> {
+		Bukkit.getGlobalRegionScheduler().run(ShopkeepersPlugin.getInstance(), task -> {
 			// Check that the player still has the same view open and then freshly get and check the
 			// involved items to make sure that players don't abuse this delay:
 			if (view.getPlayer().getOpenInventory() != view) return;

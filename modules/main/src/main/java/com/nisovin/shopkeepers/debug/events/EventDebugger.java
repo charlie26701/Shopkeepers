@@ -24,7 +24,7 @@ public class EventDebugger {
 		if (Settings.debug) {
 			// Register debug listener if enabled:
 			// Run delayed to also catch events / event listeners of other plugins.
-			Bukkit.getScheduler().runTaskLater(plugin, () -> {
+			Bukkit.getGlobalRegionScheduler().runDelayed(plugin, task -> {
 				boolean logAllEvent = Debug.isDebugging(DebugOptions.logAllEvents);
 				boolean printListeners = Debug.isDebugging(DebugOptions.printListeners);
 				if (logAllEvent || printListeners) {

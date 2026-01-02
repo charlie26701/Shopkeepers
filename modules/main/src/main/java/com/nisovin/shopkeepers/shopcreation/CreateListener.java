@@ -376,7 +376,7 @@ class CreateListener implements Listener {
 
 					// Manually remove creation item from player's hand after this event is
 					// processed:
-					Bukkit.getScheduler().runTask(plugin, () -> {
+					Bukkit.getGlobalRegionScheduler().run(plugin, task -> {
 						ItemStack newItemInMainHand = ItemUtils.decreaseItemAmount(itemInHand, 1);
 						player.getInventory().setItemInMainHand(newItemInMainHand);
 					});

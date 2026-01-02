@@ -194,7 +194,7 @@ public class EquipmentEditorView extends View {
 
 		if (rightClick) {
 			// Clear the equipment slot:
-			Bukkit.getScheduler().runTask(ShopkeepersPlugin.getInstance(), () -> {
+			Bukkit.getGlobalRegionScheduler().run(ShopkeepersPlugin.getInstance(), task -> {
 				if (!this.isOpen() || this.abortIfContextInvalid()) return;
 
 				inventory.setItem(rawSlot, this.toEditorEquipmentItem(equipmentSlot, null));
@@ -207,7 +207,7 @@ public class EquipmentEditorView extends View {
 		if (leftClick && !ItemUtils.isEmpty(cursorClone)) {
 			assert cursorClone != null;
 			// Place the item from the cursor:
-			Bukkit.getScheduler().runTask(ShopkeepersPlugin.getInstance(), () -> {
+			Bukkit.getGlobalRegionScheduler().run(ShopkeepersPlugin.getInstance(), task -> {
 				if (!this.isOpen() || this.abortIfContextInvalid()) return;
 
 				cursorClone.setAmount(1);

@@ -180,7 +180,7 @@ public class CitizensShops {
 		citizensListener.onEnable();
 
 		// Delayed to run after shopkeepers and NPCs were loaded:
-		Bukkit.getScheduler().runTaskLater(plugin, new DelayedSetupTask(), 3L);
+		Bukkit.getGlobalRegionScheduler().runDelayed(plugin, task -> new DelayedSetupTask(), 3L);
 
 		// Enabled:
 		citizensShopsEnabled = true;

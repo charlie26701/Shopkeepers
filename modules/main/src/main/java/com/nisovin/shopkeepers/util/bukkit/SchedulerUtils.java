@@ -4,6 +4,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
+import io.papermc.paper.threadedregions.scheduler.ScheduledTask;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.IllegalPluginAccessException;
 import org.bukkit.plugin.Plugin;
@@ -48,6 +49,10 @@ public final class SchedulerUtils {
 	}
 
 	public static int getActiveAsyncTasks(Plugin plugin) {
+
+		// 始终返回 0
+		if (true) return 0;
+
 		Validate.notNull(plugin, "plugin is null");
 		int workers = 0;
 		for (BukkitWorker worker : Bukkit.getScheduler().getActiveWorkers()) {
@@ -96,11 +101,11 @@ public final class SchedulerUtils {
 		}
 	}
 
-	public static @Nullable BukkitTask runTaskOrOmit(Plugin plugin, Runnable task) {
+	public static @Nullable ScheduledTask runTaskOrOmit(Plugin plugin, Runnable task) {
 		return runTaskLaterOrOmit(plugin, task, 0L);
 	}
 
-	public static @Nullable BukkitTask runTaskLaterOrOmit(
+	public static @Nullable ScheduledTask runTaskLaterOrOmit(
 			Plugin plugin,
 			Runnable task,
 			long delay
@@ -109,7 +114,8 @@ public final class SchedulerUtils {
 		// Tasks can only be registered while enabled:
 		if (plugin.isEnabled()) {
 			try {
-				return Bukkit.getScheduler().runTaskLater(plugin, task, delay);
+				if (delay <= 0 ) delay = 1;
+				return Bukkit.getGlobalRegionScheduler().runDelayed(plugin, task1 -> task.run(),delay);
 			} catch (IllegalPluginAccessException e) {
 				// Couldn't register task: The plugin got disabled just now.
 			}
@@ -117,11 +123,11 @@ public final class SchedulerUtils {
 		return null;
 	}
 
-	public static @Nullable BukkitTask runAsyncTaskOrOmit(Plugin plugin, Runnable task) {
+	public static @Nullable ScheduledTask runAsyncTaskOrOmit(Plugin plugin, Runnable task) {
 		return runAsyncTaskLaterOrOmit(plugin, task, 0L);
 	}
 
-	public static @Nullable BukkitTask runAsyncTaskLaterOrOmit(
+	public static @Nullable ScheduledTask runAsyncTaskLaterOrOmit(
 			Plugin plugin,
 			Runnable task,
 			long delay
@@ -130,7 +136,7 @@ public final class SchedulerUtils {
 		// Tasks can only be registered while enabled:
 		if (plugin.isEnabled()) {
 			try {
-				return Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, task, delay);
+				return Bukkit.getGlobalRegionScheduler().runDelayed(plugin, task1 -> task.run(), delay);
 			} catch (IllegalPluginAccessException e) {
 				// Couldn't register task: The plugin got disabled just now.
 			}

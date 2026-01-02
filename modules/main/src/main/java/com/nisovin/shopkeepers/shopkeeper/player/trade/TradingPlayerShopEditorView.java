@@ -94,7 +94,7 @@ public class TradingPlayerShopEditorView extends PlayerShopEditorView {
 		cursorClone.setAmount(1);
 		// Replace placeholder item, if this is one:
 		ItemStack cursorFinal = PlaceholderItems.replace(cursorClone);
-		Bukkit.getScheduler().runTask(ShopkeepersPlugin.getInstance(), () -> {
+		Bukkit.getRegionScheduler().run(ShopkeepersPlugin.getInstance(), view.getPlayer().getLocation(), task -> {
 			if (view.getPlayer().getOpenInventory() != view) return;
 
 			Inventory inventory = view.getTopInventory();

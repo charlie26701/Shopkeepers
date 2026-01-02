@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import io.papermc.paper.threadedregions.scheduler.ScheduledTask;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -133,7 +134,7 @@ public class SKShopkeeperStorage implements ShopkeeperStorage {
 	// loading the shopkeeper data, so that the save file doesn't get overwritten by any subsequent
 	// save requests.
 	private boolean savingDisabled = false;
-	private @Nullable BukkitTask delayedSaveTask = null;
+	private @Nullable ScheduledTask delayedSaveTask = null;
 
 	public SKShopkeeperStorage(SKShopkeepersPlugin plugin) {
 		DataVersion.init();
@@ -201,7 +202,7 @@ public class SKShopkeeperStorage implements ShopkeeperStorage {
 		private static final long PERIOD_TICKS = 6000L; // 5 minutes
 
 		void start() {
-			Bukkit.getScheduler().runTaskTimer(plugin, this, PERIOD_TICKS, PERIOD_TICKS);
+			Bukkit.getGlobalRegionScheduler().runAtFixedRate(plugin, task -> run(), PERIOD_TICKS, PERIOD_TICKS);
 		}
 
 		@Override

@@ -1,5 +1,6 @@
 package com.nisovin.shopkeepers.playershops.inactivity;
 
+import io.papermc.paper.threadedregions.scheduler.ScheduledTask;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitTask;
@@ -9,6 +10,8 @@ import com.nisovin.shopkeepers.SKShopkeepersPlugin;
 import com.nisovin.shopkeepers.config.Settings;
 import com.nisovin.shopkeepers.util.bukkit.Ticks;
 import com.nisovin.shopkeepers.util.java.Validate;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * Handles the removal of shops that are owned by inactive players.
@@ -54,7 +57,7 @@ public class PlayerInactivity {
 		private static final long INTERVAL_TICKS = Ticks.PER_SECOND * 60 * 60 * 4L;
 
 		private final Plugin plugin;
-		private @Nullable BukkitTask task = null;
+		private @Nullable ScheduledTask task = null;
 
 		public DeleteInactivePlayerShopsTask(Plugin plugin) {
 			Validate.notNull(plugin, "plugin is null");
@@ -65,7 +68,7 @@ public class PlayerInactivity {
 			this.stop(); // Stop the task if it is already running
 
 			// The task runs once shortly after start, and then periodically in large intervals:
-			task = Bukkit.getScheduler().runTaskTimer(plugin, this, 5L, INTERVAL_TICKS);
+			task = Bukkit.getAsyncScheduler().runAtFixedRate(plugin, task1 -> run(), 5L * 50, INTERVAL_TICKS * 50, TimeUnit.MILLISECONDS);
 		}
 
 		public void stop() {

@@ -636,14 +636,14 @@ public final class InventoryUtils {
 
 	public static void updateInventoryLater(Player player) {
 		Validate.notNull(player, "player is null");
-		Bukkit.getScheduler().runTask(ShopkeepersPlugin.getInstance(), player::updateInventory);
+		Bukkit.getGlobalRegionScheduler().run(ShopkeepersPlugin.getInstance(), task -> player.updateInventory());
 	}
 
 	// Only closes the player's open inventory view if it is still the specified view after the
 	// delay:
 	public static void closeInventoryDelayed(InventoryView inventoryView) {
 		Validate.notNull(inventoryView, "inventoryView is null");
-		Bukkit.getScheduler().runTask(ShopkeepersPlugin.getInstance(), () -> {
+		Bukkit.getGlobalRegionScheduler().run(ShopkeepersPlugin.getInstance(), task -> {
 			InventoryView openInventoryView = inventoryView.getPlayer().getOpenInventory();
 			if (inventoryView == openInventoryView) {
 				inventoryView.close(); // Same as player.closeInventory()
@@ -653,7 +653,7 @@ public final class InventoryUtils {
 
 	public static void closeInventoryDelayed(Player player) {
 		// Cast to Runnable to resolve ambiguity error when compiling against Paper-API:
-		Bukkit.getScheduler().runTask(ShopkeepersPlugin.getInstance(), (Runnable) player::closeInventory);
+		Bukkit.getGlobalRegionScheduler().run(ShopkeepersPlugin.getInstance(), task -> player.closeInventory());
 	}
 
 	// This can for example be used during the handling of inventory interaction events.
@@ -663,7 +663,7 @@ public final class InventoryUtils {
 			@ReadOnly @Nullable ItemStack itemStack
 	) {
 		Validate.notNull(inventory, "inventory is null");
-		Bukkit.getScheduler().runTask(ShopkeepersPlugin.getInstance(), () -> {
+		Bukkit.getGlobalRegionScheduler().run(ShopkeepersPlugin.getInstance(), task -> {
 			inventory.setItem(slot, itemStack); // This copies the item internally
 		});
 	}

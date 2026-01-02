@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.function.Predicate;
 
+import io.papermc.paper.threadedregions.scheduler.ScheduledTask;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
@@ -303,9 +304,11 @@ public class ShopkeeperChunkActivator {
 
 		void start() {
 			assert !chunkData.isActive() && !chunkData.isActivationDelayed();
-			BukkitTask task = Bukkit.getScheduler().runTaskLater(
+			Location location = new Location(chunkData.getChunkCoords().getWorld(), chunkData.getChunkCoords().getChunkX() << 4, 0, chunkData.getChunkCoords().getChunkZ() << 4);
+			ScheduledTask task = Bukkit.getRegionScheduler().runDelayed(
 					plugin,
-					this,
+					location,
+					task1 -> this.run(),
 					CHUNK_ACTIVATION_DELAY_TICKS
 			);
 			chunkData.setDelayedActivationTask(task);
@@ -321,7 +324,7 @@ public class ShopkeeperChunkActivator {
 
 	void activatePendingNearbyChunksDelayed(Player player) {
 		assert player != null;
-		Bukkit.getScheduler().runTask(plugin, new ActivatePendingNearbyChunksTask(player));
+		Bukkit.getGlobalRegionScheduler().run(plugin, task -> new ActivatePendingNearbyChunksTask(player));
 	}
 
 	private class ActivatePendingNearbyChunksTask implements Runnable {

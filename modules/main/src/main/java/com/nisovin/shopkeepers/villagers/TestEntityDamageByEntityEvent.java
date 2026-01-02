@@ -11,6 +11,7 @@ import com.nisovin.shopkeepers.api.internal.util.Unsafe;
  * A test event that is called to check if a player can damage the given entity (e.g. when the
  * player tries to hire a villager).
  */
+@SuppressWarnings({"UnstableApiUsage", "deprecation"})
 public class TestEntityDamageByEntityEvent extends EntityDamageByEntityEvent {
 
 	public TestEntityDamageByEntityEvent(Entity damager, Entity damagee) {
